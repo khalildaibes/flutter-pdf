@@ -95,14 +95,19 @@ class DetailPage extends StatelessWidget {
                   ),
                 ),
               ),
+              ListTile(
+                title: Container(child:TextField(),width: 70,),
+                leading:Container(child:TextField(),width: 70,),
+                trailing:Container(child:TextField(),width: 70,),
+              ),
                 Row(
                   // crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ElevatedButton(onPressed:() => {
-
+                      
                   }, child: 
-                  Column(children: [ Text("הוספת פירוט חדש"),Icon(Icons.add)],))
+                  Column(children: [ Text("הוספת פירוט חדש"),Icon(Icons.add),],))
                 ],
               ),                        
             ],
