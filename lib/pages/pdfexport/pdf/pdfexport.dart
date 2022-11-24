@@ -6,6 +6,9 @@ import 'package:makepdfs/models/invoice.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
 import 'dart:io';
+import 'package:intl/intl.dart'as ntl;
+import 'package:flutter_money_formatter/flutter_money_formatter.dart';
+import 'package:locales/locales.dart'as lo;
 import 'package:flutter/services.dart' show FontLoader, rootBundle;
 write_String(String input){
 return input.split('').reversed.join();
@@ -21,6 +24,9 @@ Future<Uint8List> makePdf(Invoice invoice) async {
 
 // await custom.load();
   // const TextStyle(font: 'VarelaRound')
+  var oCcysymbol = ntl.NumberFormat.simpleCurrency(locale: 'iw_IL').currencySymbol;
+  var oCcy =ntl.NumberFormat.currency(locale: 'iw_IL', name: "ISR", symbol:oCcysymbol, customPattern: "#,##0.00 "+oCcysymbol);
+  // final oCcy = new ntl.NumberFormat("#,##0.00", "en_US");
   final imageLogo = MemoryImage((await rootBundle.load('assets/technical_logo.png')).buffer.asUint8List());
   TextDirection? rtl=TextDirection.rtl as TextDirection?;
 var input = "חליל דעיבס ";
@@ -53,20 +59,37 @@ var input = "חליל דעיבס ";
               children: [
                 Column(
                   children: [
-               
-                     Directionality ( child:Text(write_String("חליל דעיבס "),style: TextStyle(fontSize: 20,font: Font.ttf(font),fontWeight: FontWeight.normal, )), textDirection: TextDirection.rtl,),
-                     Text(invoice.address),
+                    Text(write_String("לכבוד "),style: TextStyle(fontSize: 14,font: Font.ttf(font),fontWeight: FontWeight.normal, )),
+                     Directionality ( child:
+                     Text(write_String(invoice.customer),style: TextStyle(fontSize: 14,font: Font.ttf(font),fontWeight: FontWeight.normal, )), textDirection: TextDirection.rtl,),
+                     Text(write_String(invoice.address)),
                   ],
                   crossAxisAlignment: CrossAxisAlignment.start,
                 ),
                 SizedBox(
-                  height: 150,
-                  width: 150,
+                  height: 250,
+                  width: 300,
                   child: Image(imageLogo),
                 )
               ],
             ),
-            Container(height: 50),
+                        
+             Padding(
+                      child:Column(children: [ 
+                      //      Text(
+                      //   write_String('א.ד דקדוקי התותחים לבנייה 2202'),
+                      //   style: Theme.of(context).header4,
+                      //   textAlign: TextAlign.center,
+                      // ),
+                        Text(
+                        write_String('הצעת מחיר עבור עבודת בנייה/שיפוץ '),
+                        style: Theme.of(context).header4,
+                        textAlign: TextAlign.center,
+                      ),],),
+                      padding: EdgeInsets.all(20),
+             
+                    ),
+          
             Table(
               border: TableBorder.all(color: PdfColors.black),
               children: [
@@ -74,7 +97,15 @@ var input = "חליל דעיבס ";
                   children: [
                     Padding(
                       child: Text(
-                        'INVOICE FOR PAYMENT',
+                        write_String('הצעת מחיר '),
+                        style: Theme.of(context).header4,
+                        textAlign: TextAlign.center,
+                      ),
+                      padding: EdgeInsets.all(20),
+                    ),
+                     Padding(
+                      child: Text(
+                        write_String('שלבי ביצוע '),
                         style: Theme.of(context).header4,
                         textAlign: TextAlign.center,
                       ),
@@ -82,39 +113,44 @@ var input = "חליל דעיבס ";
                     ),
                   ],
                 ),
+                
                 ...invoice.items.map(
                   (e) => TableRow(
                     children: [
+                     
                       Expanded(
-                        child: PaddedText(e.description),
+                        child: PaddedText(oCcy.format(e.cost),align: TextAlign.right),
+                        flex: 1,
+                      ) ,Expanded(
+                        child: PaddedText( write_String(e.description),align: TextAlign.right),
                         flex: 2,
                       ),
-                      Expanded(
-                        child: PaddedText("\$${e.cost}"),
-                        flex: 1,
-                      )
                     ],
                   ),
                 ),
+                 
                 TableRow(
                   children: [
-                    PaddedText('TAX', align: TextAlign.right),
-                    PaddedText('\$${(invoice.totalCost() * 0.1).toStringAsFixed(2)}'),
+                      PaddedText(oCcy.format((invoice.totalCost() * 0.1)),align: TextAlign.right),
+                    PaddedText('מעמ', align: TextAlign.right),
+                  
                   ],
                 ),
                 TableRow(
-                  children: [PaddedText('TOTAL', align: TextAlign.right), PaddedText('\$${(invoice.totalCost() * 1.1).toStringAsFixed(2)}')],
+                  children: [PaddedText(oCcy.format((invoice.totalCost() * 1.1)),align: TextAlign.right)
+                    ,PaddedText('סהכ', align: TextAlign.right), ],
                 )
               ],
             ),
-            Padding(
-              child: Text(
-                "THANK YOU FOR YOUR CUSTOM!",
-                style: Theme.of(context).header2,
-              ),
-              padding: EdgeInsets.all(20),
-            ),
-            Text("Please forward the below slip to your accounts payable department."),
+            // Padding(
+            //   child: Text(
+            //   write_String("תודה רבה לכם על האמונה בנו!"),
+            //     style: Theme.of(context).header2,
+            //   ),
+            //   padding: EdgeInsets.all(20),
+            // ),
+             Container(height: 20),
+            Text( write_String("נא לא להעביר את הצעת המחיר לאדם אחר או להשתמש בה ללא האישור של החברה")),
             Divider(
               height: 1,
               borderStyle: BorderStyle.dashed,
@@ -125,36 +161,54 @@ var input = "חליל דעיבס ";
               children: [
                 TableRow(
                   children: [
-                    PaddedText('Account Number'),
-                    PaddedText(
-                      '1234 1234',
-                    )
+                     PaddedText(
+                      invoice.phone,align: TextAlign.right
+                    ),
+                    PaddedText(write_String('מספר טלפון לקוח'),align: TextAlign.right),
+                   
                   ],
                 ),
+                // TableRow(
+                //   children: [
+                //      PaddedText(
+                //       'ADAM FAMILY TRUST',
+                //     ),
+                //     PaddedText(
+                //       'Account Name',
+                //     ),
+                   
+                //   ],
+                // ),
                 TableRow(
                   children: [
-                    PaddedText(
-                      'Account Name',
+                   
+                    PaddedText(oCcy.format((invoice.totalCost() * 1.1)),align: TextAlign.right),
+                     PaddedText(
+                      write_String('סה"כ לתשלום'),align: TextAlign.right
                     ),
-                    PaddedText(
-                      'ADAM FAMILY TRUST',
-                    )
-                  ],
-                ),
-                TableRow(
-                  children: [
-                    PaddedText(
-                      'Total Amount to be Paid',
-                    ),
-                    PaddedText('\$${(invoice.totalCost() * 1.1).toStringAsFixed(2)}')
                   ],
                 )
+
+              ],
+            ),
+             Container(height: 40),
+            Table(
+              border: TableBorder.all(color: PdfColors.black),
+              children: [
+                TableRow(
+                  children: [
+                    PaddedText(write_String('חתימת מנכל חברה'),align: TextAlign.right),
+                    PaddedText(write_String('חתימת לקוח'),align: TextAlign.right),
+                   
+                  ],
+                ),
+                
               ],
             ),
             Padding(
               padding: EdgeInsets.all(30),
               child: Text(
-                'Please ensure all cheques are payable to the ADAM FAMILY TRUST.',
+                write_String('נא להקפיד על קריאת הצעת המחיר היטב ולשמור על הצעה זו.'),
                 // style: TextStyle( font: )
               ),
             )

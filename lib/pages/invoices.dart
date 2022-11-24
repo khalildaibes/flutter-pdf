@@ -8,38 +8,18 @@ class InvoicePage extends StatelessWidget {
 
   final invoices = <Invoice>[
     Invoice(
-        customer: 'David Thomas',
-        address: '123 Fake St\r\nBermuda Triangle',
+        customer: 'דעיבס חליל ',
+        address: 'נחף אלעין 0',
         items: [
           LineItem(
-            'Technical Engagement',
-            120,
+            'בנייה.שפוץ',
+            120000,
           ),
-          LineItem('Deployment Assistance', 200),
-          LineItem('Develop Software Solution', 3020.45),
-          LineItem('Produce Documentation', 840.50),
+          LineItem('בניית גדר ברוחב של 50 * 50  ', 200),
+          LineItem('צעד2', 3020.45),
+          LineItem('צעד3', 840.50),
         ],
-        name: 'הצעת מחיר חליל'),
-    Invoice(
-      customer: 'חלילי דעיבס ',
-      address: '82 Unsure St\r\nBaggle Palace',
-      items: [
-        LineItem('Professional Advice', 100),
-        LineItem('Lunch Bill', 43.55),
-        LineItem('Remote Assistance', 50),
-      ],
-      name: 'Provide remote support after lunch',
-    ),
-    Invoice(
-      customer: 'Marty McDanceFace',
-      address: '55 Dancing Parade\r\nDance Place',
-      items: [
-        LineItem('Program the robots', 400.50),
-        LineItem('Find tasteful dance moves for the robots', 80.55),
-        LineItem('General quality assurance', 80),
-      ],
-      name: 'Create software to teach robots how to dance',
-    )
+        name: 'הצעת מחיר דוגמה', phone: '0509977084'),
   ];
 
   @override

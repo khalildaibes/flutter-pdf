@@ -1,14 +1,22 @@
 class Invoice {
-  final String customer;
-  final String address;
-  final String name;
-  final List<LineItem> items;
+  String customer;
+  String address;
+  String name;
+  List<LineItem> items;
+  String phone; 
   Invoice({
     required this.customer,
     required this.address,
     required this.items,
     required this.name,
+    required this.phone,
   });
+  get_items(){
+    return this.items;
+  }
+  set_items(items){
+    this.items=items;
+  }
   double totalCost() {
     return items.fold(0, (previousValue, element) => previousValue + element.cost);
   }
