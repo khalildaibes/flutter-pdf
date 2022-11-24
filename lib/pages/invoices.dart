@@ -19,9 +19,9 @@ class InvoicePage extends StatelessWidget {
           LineItem('Develop Software Solution', 3020.45),
           LineItem('Produce Documentation', 840.50),
         ],
-        name: 'Create and deploy software package'),
+        name: 'הצעת מחיר חליל'),
     Invoice(
-      customer: 'Michael Ambiguous',
+      customer: 'חלילי דעיבס ',
       address: '82 Unsure St\r\nBaggle Palace',
       items: [
         LineItem('Professional Advice', 100),
@@ -58,7 +58,7 @@ class InvoicePage extends StatelessWidget {
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (builder) => DetailPage(invoice: e),
+                    builder: (builder) =>  DetailPage(invoice: e),
                   ),
                 );
               },
