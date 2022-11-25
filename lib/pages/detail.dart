@@ -242,8 +242,14 @@ child:TextField(controller: myservicedescriptionController,decoration: new Input
                                      double.parse(myservicecostController.text)));
                                      invoice.set_items(invoiceitems);
                                       setState(invoice);
-                                      Navigator.of(context).pop;
-                                      (context as Element).reassemble();
+                                      Navigator.pop(context);
+                                       Navigator.pop(context);  //   // pop current page
+                                      Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (builder) =>  DetailPage(invoice: invoice),
+                  ),
+                );
+                                      
                                     },
                                   ),
                                 )
