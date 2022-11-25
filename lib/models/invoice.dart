@@ -11,10 +11,10 @@ class Invoice {
     required this.name,
     required this.phone,
   });
-  get_items(){
+  List<LineItem> get_items(){
     return this.items;
   }
-  set_items(items){
+  set_items(List<LineItem> items){
     this.items=items;
   }
   double totalCost() {

@@ -5,13 +5,20 @@ import 'package:makepdfs/pages/pdfexport/pdf/pdfexport.dart';
 import 'package:makepdfs/pages/pdfexport/pdfpreview.dart';
 import 'package:printing/printing.dart';
 import 'package:flutter_money_formatter/flutter_money_formatter.dart';
+
+var  myservicenameController = TextEditingController();
+var myservicecostController = TextEditingController();
+var myservicedescriptionController = TextEditingController();
 class DetailPage extends StatelessWidget {
-  final Invoice invoice;
-  const DetailPage({
+  Invoice invoice;
+  DetailPage({
     Key? key,
     required this.invoice,
   }) : super(key: key);
-
+setState(invoice) {
+  this.invoice=invoice;
+return;
+}
   @override
   Widget build(BuildContext context) {
     return 
@@ -76,6 +83,13 @@ class DetailPage extends StatelessWidget {
                           trailing: Text(
                             e.cost.toStringAsFixed(2),
                           ),
+                          onTap:() {
+                            List<LineItem> invoiceitems=invoice.get_items();
+                            invoiceitems.remove(e);
+                            invoice.set_items(invoiceitems);
+                            setState(invoice);
+                            (context as Element).reassemble();
+                          },
                         ),
                       ),
                       
@@ -95,17 +109,15 @@ class DetailPage extends StatelessWidget {
                   ),
                 ),
               ),
-              ListTile(
-                title: Container(child:TextField(),width: 70,),
-                leading:Container(child:TextField(),width: 70,),
-                trailing:Container(child:TextField(),width: 70,),
-              ),
+            
                 Row(
                   // crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ElevatedButton(onPressed:() => {
-                      
+                  showDialog(
+                     context:context,
+                     builder: (BuildContext context) => _buildPopupDialog(context),)
                   }, child: 
                   Column(children: [ Text("הוספת פירוט חדש"),Icon(Icons.add),],))
                 ],
@@ -143,5 +155,104 @@ class DetailPage extends StatelessWidget {
                 
       ),
     );
+  }
+
+  
+  Widget _buildPopupDialog(BuildContext context) {
+    return AlertDialog(
+                    content: Stack(
+                      children: <Widget>[
+                        Positioned(
+                          child: InkResponse(
+                            onTap: () {
+                              Navigator.of(context).pop();
+                               (context as Element).reassemble();
+                            },
+                            child: CircleAvatar(
+                              child: Icon(Icons.close),
+                              backgroundColor: Colors.red,
+                            ),
+                          ),
+                        ),
+                        Form(
+                          child: Directionality(
+                            textDirection: TextDirection.rtl,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Row(
+                                    children: [
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Padding(
+                                              padding: const EdgeInsets.all(10.0),
+                                              child: Row(children: [
+                                                Text("           שם:",
+                                                  ),
+                                          Container(child:TextField(controller: myservicenameController,decoration: new InputDecoration.collapsed(
+    hintText: 'בניית גדר'
+  ),),width: 70,)
+                                              ])),
+                                          Padding(
+                                              padding: const EdgeInsets.all(10.0),
+                                              child: Row(children: [
+                                                Text("            תיאור:",
+                                                    ),
+                                      Container(
+  decoration: const BoxDecoration(
+    border: Border(
+      top: BorderSide(color: Color(0xFFFFFFFF)),
+      left: BorderSide(color: Color(0xFFFFFFFF)),
+      right: BorderSide(),
+      bottom: BorderSide(),
+    ),
+  ),
+child:TextField(controller: myservicedescriptionController,decoration: new InputDecoration.collapsed(
+    hintText: 'גדר בארוך 50 מטר'
+  ),),width: 70,)
+                                              ],
+                                              ),
+                                              ),
+                                               Padding(
+                                              padding: const EdgeInsets.all(10.0),
+                                              child: Row(children: [
+                                                Text("            עלות:",
+                                                    ),
+                                               Container(child:TextField(controller: myservicecostController,decoration: new InputDecoration.collapsed(
+    hintText: '100.00'
+  ),),width: 70,)
+                                              ],),
+                                      )],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                               
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: TextButton(
+                                    child: Text("הוספת מפרט"),
+                                    onPressed: () {
+                                     List<LineItem> invoiceitems=invoice.get_items();
+                                     invoiceitems.add(LineItem(myservicedescriptionController.text,
+                                     double.parse(myservicecostController.text)));
+                                     invoice.set_items(invoiceitems);
+                                      setState(invoice);
+                                      Navigator.of(context).pop;
+                                      (context as Element).reassemble();
+                                    },
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
   }
 }
