@@ -76,11 +76,11 @@ var input = "חליל דעיבס ";
                         
              Padding(
                       child:Column(children: [ 
-                      //      Text(
-                      //   write_String('א.ד דקדוקי התותחים לבנייה 2202'),
-                      //   style: Theme.of(context).header4,
-                      //   textAlign: TextAlign.center,
-                      // ),
+                           Text(
+                        write_String('א.ד דקדוקי התותחים לבנייה 2202'),
+                        style: Theme.of(context).header4,
+                        textAlign: TextAlign.center,
+                      ),
                         Text(
                         write_String('הצעת מחיר עבור עבודת בנייה/שיפוץ '),
                         style: Theme.of(context).header4,
